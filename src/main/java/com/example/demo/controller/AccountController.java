@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.AccountResponse;
+import com.example.demo.dto.AccountDto;
 import com.example.demo.enums.Currency;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,12 +11,12 @@ import java.util.List;
 public class AccountController {
 
     @PostMapping("/{accountId}/{customerId}")
-    public AccountResponse createAccount(@PathVariable int accountId, @PathVariable int customerId, @RequestParam List<Currency> currencies) {
+    public AccountDto createAccount(@PathVariable int accountId, @PathVariable int customerId, @RequestParam List<Currency> currencies) {
         return null;
     }
 
     @GetMapping("/{accountId}")
-    public AccountResponse getAccount(@PathVariable int accountId) {
+    public AccountDto getAccount(@PathVariable int accountId) {
         return null;
     }
 }

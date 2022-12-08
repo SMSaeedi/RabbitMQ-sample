@@ -1,5 +1,8 @@
 package com.example.demo.enums;
 
 public enum Currency {
-    IR, EUR, SEK, GBP, USD
+    IR("Iran"),SAR("Saudi Riyal"), EUR("Europe"), GBP("England"), USD("USA"), CAD("Canadian Dollar"), CHF("Swiss Franc");
+
+    Currency(String europe) {
+    }
 }

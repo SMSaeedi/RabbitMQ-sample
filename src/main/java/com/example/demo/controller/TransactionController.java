@@ -1,7 +1,5 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.TransactionRequest;
-import com.example.demo.dto.TransactionResponse;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -11,7 +9,7 @@ import java.util.List;
 @RequestMapping("/api/transactions")
 public class TransactionController {
 
-    @PostMapping
+   /* @PostMapping
     public TransactionResponse createTransaction(@RequestBody TransactionRequest request) {
         return null;
     }
@@ -21,8 +19,8 @@ public class TransactionController {
         return null;
     }
 
-    @GetMapping("/{accountId}")
+    @GetMapping("/list-transactions/{accountId}")
     public List<TransactionResponse> transactionsHistory(@PathVariable int accountId, @RequestParam int transactionCount, @RequestParam Date fromDate, @RequestParam Date toDate) {
         return null;
-    }
+    }*/
 }
