@@ -4,6 +4,7 @@ import com.example.demo.dto.AccountDto;
 import com.example.demo.enums.AccountType;
 import com.example.demo.enums.Currency;
 import com.example.demo.model.Account;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -22,4 +23,9 @@ public interface AccountRepository {
 
     @Select("SELECT * FROM accounts")
     public List<Account> findAll();
+
+    @Delete("delete FROM accounts WHERE id = #{id}")
+    public void deleteById(Integer id);
+
+
 }

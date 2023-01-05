@@ -28,3 +28,12 @@ spring:
     port: 5672
     username: guest
     password: guest
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+explore:
+  rabbitmq:
+    exchange: exchange
+    queue: queue
+    routing-key: routing-key
+
