@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.AccountDto;
+import com.example.demo.enums.AccountType;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 
-@Service
+@Component
 @AllArgsConstructor
 @NoArgsConstructor
 @Slf4j
@@ -24,14 +26,17 @@ public class RabbitMQSender {
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
-    @Value("explore.rabbitmq.exchange")
+    @Value("${explore.rabbitmq.exchange}")
     private String exchange;
 
-    @Value("explore.rabbitmq.routing-key")
+    @Value("${explore.rabbitmq.routing-key}")
     private String routingKey;
 
     public void send(String  message){
-        rabbitTemplate.convertAndSend(exchange,routingKey,message);
+
+        AccountDto accountDto = AccountDto.builder()
+                .accountType(AccountType.SALARY).build();
+        rabbitTemplate.convertAndSend(exchange,routingKey,accountDto);
         log.debug("Printing variable value: ".concat(message));
     }
 

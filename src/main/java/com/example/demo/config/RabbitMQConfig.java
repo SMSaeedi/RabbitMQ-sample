@@ -12,13 +12,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfig {
 
-	/*explore:
-  rabbitmq:
-    exchange: exchange
-    queue: queue
-    routingkey: routingkey*/
-
-
 	@Value("${explore.rabbitmq.queue}")
 	String queueName;
 
