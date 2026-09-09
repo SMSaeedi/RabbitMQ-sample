@@ -1,13 +1,21 @@
 package com.example.demo.repository;
 
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Update;
+import com.example.demo.model.Transaction;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-@Mapper
-public interface TransactionRepository {
-    /*@Update("Update accounts set amount=#{amount}, currency=#{currency}, " +
-            "directionOfTransaction=#{directionOfTransaction}, " +
-            "description=#{description}, " +
-            "where id=#{accountId}")
-    public TransactionResponse createTransaction(TransactionRequest request);*/
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Repository
+public interface TransactionRepository extends JpaRepository<Transaction, Long> {
+    List<Transaction> findByAccountIdOrderByCreatedAtDesc(Long accountId, Pageable pageable);
+
+    List<Transaction> findByAccountIdAndCreatedAtBetweenOrderByCreatedAtDesc(
+        Long accountId,
+        LocalDateTime from,
+        LocalDateTime to,
+        Pageable pageable
+    );
 }

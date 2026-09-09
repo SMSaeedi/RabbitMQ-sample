@@ -1,7 +1,12 @@
 package com.example.demo.config;
 
-import org.springframework.amqp.core.*;
+import org.springframework.amqp.core.AmqpAdmin;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
@@ -12,39 +17,39 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfig {
 
-	@Value("${explore.rabbitmq.queue}")
-	String queueName;
+    @Bean
+    public Queue queue(@Value("${explore.rabbitmq.queue}") String queueName) {
+        return new Queue(queueName, true, false, false);
+    }
 
-	@Value("${explore.rabbitmq.exchange}")
-	String exchange;
+    @Bean
+    public DirectExchange exchange(@Value("${explore.rabbitmq.exchange}") String exchangeName) {
+        return new DirectExchange(exchangeName, true, false);
+    }
 
-	@Value("${explore.rabbitmq.routing-key}")
-	private String routingKey;
+    @Bean
+    public Binding binding(
+        Queue queue,
+        DirectExchange exchange,
+        @Value("${explore.rabbitmq.routing-key}") String routingKey
+    ) {
+        return BindingBuilder.bind(queue).to(exchange).with(routingKey);
+    }
 
-	@Bean
-	Queue queue() {
-		return new Queue(queueName, false);
-	}
+    @Bean
+    public MessageConverter jsonMessageConverter() {
+        return new Jackson2JsonMessageConverter();
+    }
 
+    @Bean
+    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
+        RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
+        rabbitTemplate.setMessageConverter(jsonMessageConverter());
+        return rabbitTemplate;
+    }
 
-	@Bean
-	DirectExchange exchange() {
-		return new DirectExchange(exchange);
-	}
-
-	@Bean
-	Binding binding(Queue queue, DirectExchange exchange) {
-		return BindingBuilder.bind(queue).to(exchange).with(routingKey);
-	}
-
-	@Bean
-	public MessageConverter jsonMessageConverter() {
-		return new Jackson2JsonMessageConverter();
-	}
-
-	public AmqpTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
-		final RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
-		rabbitTemplate.setMessageConverter(jsonMessageConverter());
-		return rabbitTemplate;
-	}
+    @Bean
+    public AmqpAdmin amqpAdmin(ConnectionFactory connectionFactory) {
+        return new RabbitAdmin(connectionFactory);
+    }
 }

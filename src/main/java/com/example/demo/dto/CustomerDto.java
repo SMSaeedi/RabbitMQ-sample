@@ -1,18 +1,23 @@
 package com.example.demo.dto;
 
-import lombok.Data;
+import com.example.demo.model.Customer;
 
-import java.io.Serializable;
-import java.util.Set;
+import java.util.List;
 
-/**
- * A DTO for the {@link com.example.demo.model.Customer} entity
- */
-@Data
-public class CustomerDto implements Serializable {
-    private final String fullName;
-    private final Set<AccountDto> accounts;
-    private final String zipCode;
-    private final Long phoneNumber;
-    private final String address;
+public record CustomerDto(Long id, String fullName, String zipCode, Long phoneNumber, String address, List<AccountDto> accounts) {
+    public static CustomerDto fromEntity(Customer customer) {
+        if (customer == null) {
+            return null;
+        }
+        return new CustomerDto(
+            customer.getId(),
+            customer.getFullName(),
+            customer.getZipCode(),
+            customer.getPhoneNumber(),
+            customer.getAddress(),
+            customer.getAccounts() == null
+                ? List.of()
+                : customer.getAccounts().stream().map(AccountDto::fromEntity).toList()
+        );
+    }
 }

@@ -2,42 +2,35 @@ package com.example.demo.service;
 
 import com.example.demo.dto.AccountDto;
 import com.example.demo.enums.AccountType;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import lombok.extern.slf4j.XSlf4j;
+import com.example.demo.enums.Currency;
 import org.slf4j.Logger;
-import org.springframework.amqp.core.AmqpTemplate;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 
-@Component
-@AllArgsConstructor
-@NoArgsConstructor
-@Slf4j
+@Service
 public class RabbitMQSender {
-    @Autowired
-    private AmqpTemplate amqpTemplate;
+    private static final Logger log = LoggerFactory.getLogger(RabbitMQSender.class);
+    private final RabbitTemplate rabbitTemplate;
+    private final String exchange;
+    private final String routingKey;
 
-    @Autowired
-    private RabbitTemplate rabbitTemplate;
-
-    @Value("${explore.rabbitmq.exchange}")
-    private String exchange;
-
-    @Value("${explore.rabbitmq.routing-key}")
-    private String routingKey;
-
-    public void send(String  message){
-
-        AccountDto accountDto = AccountDto.builder()
-                .accountType(AccountType.SALARY).build();
-        rabbitTemplate.convertAndSend(exchange,routingKey,accountDto);
-        log.debug("Printing variable value: ".concat(message));
+    public RabbitMQSender(
+        RabbitTemplate rabbitTemplate,
+        @Value("${explore.rabbitmq.exchange}") String exchange,
+        @Value("${explore.rabbitmq.routing-key}") String routingKey
+    ) {
+        this.rabbitTemplate = rabbitTemplate;
+        this.exchange = exchange;
+        this.routingKey = routingKey;
     }
 
+    public void send(String message) {
+        AccountDto accountDto = new AccountDto(null, null, BigDecimal.ZERO, Currency.USD, AccountType.SALARY);
+        rabbitTemplate.convertAndSend(exchange, routingKey, accountDto);
+        log.info("Sent message to RabbitMQ: {}", message);
+    }
 }
